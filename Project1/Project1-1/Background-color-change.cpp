@@ -1,20 +1,21 @@
 #include <iostream>
-#include <gl/glew.h>
 #include <cstdlib>
 #include <ctime>
+#include <gl/glew.h>
 #include <gl/freeglut.h>
 #include <gl/freeglut_ext.h>
 
 GLvoid drawScene(GLvoid);
 GLvoid Reshape(int w, int h);
 GLvoid Keyboard(unsigned char key, int x, int y);
+GLvoid TimerFunction(int value);
 void RandomColor();
 
 float r = 0.0f; float g = 0.0f; float b = 0.0f;
 bool isTimerRunning = false;
 
 void main(int argc, char** argv)
-{	
+{
 	srand(static_cast<unsigned int>(time(NULL)));
 
 	//--- 윈도우 생성하기
@@ -37,13 +38,13 @@ void main(int argc, char** argv)
 
 	glutDisplayFunc(drawScene);						// 출력 함수의 지정
 	glutReshapeFunc(Reshape);						// 다시 그리기 함수 지정
-	glutKeyboardFunc(Keyboard); //--- 키보드 입력 콜백함수 지정
+	glutKeyboardFunc(Keyboard);						// 키보드 입력 콜백함수 지정
 	glutMainLoop();									// 이벤트 처리 시작
 }
 
 GLvoid drawScene()
 {
-	glClearColor(r, g, b, 1.0f);			// 바탕색을 ‘blue’로 지정
+	glClearColor(r, g, b, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);					// 설정된 색으로 전체를 칠하기
 	glutSwapBuffers();								// 화면에 출력하기
 }
@@ -68,38 +69,38 @@ GLvoid Keyboard(unsigned char key, int x, int y)
 	case 'c':
 		r = 0.0f; g = 1.0f; b = 1.0f;
 		break;
-	
+
 	case 'm':
 		r = 1.0f; g = 0.0f; b = 1.0f;
 		break;
-	
+
 	case 'y':
 		r = 1.0f; g = 1.0f; b = 0.0f;
 		break;
-	
+
 	case 'a':
 		RandomColor();
 		break;
-	
+
 	case 'w':
 		r = 1.0f; g = 1.0f; b = 1.0f;
 		break;
-	
+
 	case 'k':
 		r = 0.0f; g = 0.0f; b = 0.0f;
 		break;
-	
+
 	case 't':
 		if (!isTimerRunning) {
 			isTimerRunning = true;
 			glutTimerFunc(1000, TimerFunction, 0);
 		}
 		break;
-	
+
 	case 's':
 		isTimerRunning = false;
 		break;
-	
+
 	case 'q':
 		exit(0);
 	}
