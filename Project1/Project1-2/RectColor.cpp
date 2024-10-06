@@ -5,14 +5,6 @@
 #include <gl/freeglut.h>
 #include <gl/freeglut_ext.h>
 
-GLvoid drawScene(GLvoid);
-GLvoid Reshape(int w, int h);
-void mouse(int button, int state, int x, int y);
-bool isInsideRect(float x, float y, const struct Rectangle& rect);
-void scaleRect(struct Rectangle& rect, bool expend);
-void RandomColor(float& r, float& g, float& b);
-void changeBGColor();
-
 struct Rectangle {
 	float x1, x2, y1, y2;
 	float r, g, b;
@@ -26,6 +18,14 @@ struct Rectangle rectangle[4] = {
 };
 
 float BGr = 0.0f, BGg = 0.0f, BGb = 0.0f;
+
+GLvoid drawScene(GLvoid);
+GLvoid Reshape(int w, int h);
+void mouse(int button, int state, int x, int y);
+bool isInsideRect(float x, float y, const struct Rectangle& rect);
+void scaleRect(struct Rectangle& rect, bool expend);
+void RandomColor(float& r, float& g, float& b);
+void changeBGColor();
 
 void main(int argc, char** argv)
 {
