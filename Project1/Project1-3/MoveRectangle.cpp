@@ -16,6 +16,8 @@ std::vector<struct Rectangle> rectangle;
 bool isDragging = false;
 int selectedRect = -1;
 float offsetX, offsetY;
+float targetX, targetY;
+bool moveToTarget = false;
 
 GLvoid drawScene(GLvoid);
 GLvoid Reshape(int w, int h);
@@ -26,6 +28,7 @@ bool isInsideRect(float x, float y, const struct Rectangle& rect);
 bool isOverlapping(const struct Rectangle& rect1, const struct Rectangle& rect2);
 void addRectangle();
 void mergeRectangles(int draggedRectIndex);
+void timer(int value);
 
 void main(int argc, char** argv)
 {
@@ -54,6 +57,7 @@ void main(int argc, char** argv)
 	glutMouseFunc(mouse);
 	glutMotionFunc(motion);
 	glutKeyboardFunc(keyboard);
+	glutTimerFunc(16, timer, 0);
 
 	glutMainLoop();
 }
@@ -87,8 +91,6 @@ void mouse(int button, int state, int x, int y) {
 				selectedRect = i;
 				offsetX = nx - rectangle[i].x1;
 				offsetY = ny - rectangle[i].y1;
-
-				std::cout << "Selected rectangle " << i << " at (" << nx << ", " << ny << ")\n";
 				break;
 			}
 		}
@@ -99,13 +101,10 @@ void mouse(int button, int state, int x, int y) {
 
 		// 드래그된 네모가 다른 네모와 겹칠 때만 합침
 		if (selectedRect != -1) {
-			std::cout << "merge\n";
 			mergeRectangles(selectedRect);
 		}
 
 		selectedRect = -1;
-
-		std::cout << "Drag ended.\n";
 	}
 
 	glutPostRedisplay();
@@ -117,11 +116,11 @@ void motion(int x, int y) {
 		float nx = (float)(x) / (glutGet(GLUT_WINDOW_WIDTH) / 2) - 1.0f;
 		float ny = 1.0f - (float)(y) / (glutGet(GLUT_WINDOW_HEIGHT) / 2);
 
-		float width = rectangle[selectedRect].x2 - rectangle[selectedRect].x1;
-		float height = rectangle[selectedRect].y2 - rectangle[selectedRect].y1;
+		// float width = rectangle[selectedRect].x2 - rectangle[selectedRect].x1;
+		// float height = rectangle[selectedRect].y2 - rectangle[selectedRect].y1;
 
 		// 마우스의 이동 위치에 따라 네모의 위치를 업데이트
-		rectangle[selectedRect].x1 = nx - offsetX;
+		/*rectangle[selectedRect].x1 = nx - offsetX;
 		rectangle[selectedRect].x2 = rectangle[selectedRect].x1 + width;
 		rectangle[selectedRect].y1 = ny - offsetY;
 		rectangle[selectedRect].y2 = rectangle[selectedRect].y1 + height;
@@ -129,7 +128,11 @@ void motion(int x, int y) {
 		std::cout << "Dragging rectangle " << selectedRect << " to ("
 			<< rectangle[selectedRect].x1 << ", " << rectangle[selectedRect].y1 << ")\n";
 
-		glutPostRedisplay();
+		glutPostRedisplay();*/
+
+		targetX = nx - offsetX;
+		targetY = ny - offsetY;
+		moveToTarget = true;
 	}
 }
 
@@ -190,4 +193,30 @@ void mergeRectangles(int draggedRectIndex) {
 			++j;
 		}
 	}
+}
+
+void timer(int value) {
+	if (moveToTarget && selectedRect != -1) {
+		float speed = 0.05f;  // 이동 속도
+		float width = rectangle[selectedRect].x2 - rectangle[selectedRect].x1;
+		float height = rectangle[selectedRect].y2 - rectangle[selectedRect].y1;
+
+		// 네모의 현재 좌표
+		float currentX = rectangle[selectedRect].x1;
+		float currentY = rectangle[selectedRect].y1;
+
+		// 목표 위치로 이동
+		rectangle[selectedRect].x1 += (targetX - currentX) * speed;
+		rectangle[selectedRect].y1 += (targetY - currentY) * speed;
+		rectangle[selectedRect].x2 = rectangle[selectedRect].x1 + width;
+		rectangle[selectedRect].y2 = rectangle[selectedRect].y1 + height;
+
+		// 목표 위치에 도달했을 경우
+		if (abs(targetX - rectangle[selectedRect].x1) < 0.01f && abs(targetY - rectangle[selectedRect].y1) < 0.01f) {
+			moveToTarget = false;
+		}
+	}
+
+	glutPostRedisplay();
+	glutTimerFunc(16, timer, 0);  // 16ms 간격으로 타이머 호출 (약 60fps)
 }
