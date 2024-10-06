@@ -45,7 +45,7 @@ void main(int argc, char** argv)
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA);
 	glutInitWindowPosition(620, 250);
 	glutInitWindowSize(500, 500);
-	glutCreateWindow("Color Change");
+	glutCreateWindow("Rectangle animation");
 
 	glewExperimental = GL_TRUE;
 	if (glewInit() != GLEW_OK) {

@@ -78,7 +78,7 @@ GLvoid Reshape(int w, int h) {
 	glViewport(0, 0, w, h);
 }
 
-void mouse(int button, int state, int x, int y) {
+GLvoid mouse(int button, int state, int x, int y) {
 	// 윈도우 좌표를 OpenGL 좌표로 변환
 	float nx = (float)(x) / (glutGet(GLUT_WINDOW_WIDTH) / 2) - 1.0f;
 	float ny = 1.0f - (float)(y) / (glutGet(GLUT_WINDOW_HEIGHT) / 2);
@@ -110,7 +110,7 @@ void mouse(int button, int state, int x, int y) {
 	glutPostRedisplay();
 }
 
-void motion(int x, int y) {
+GLvoid motion(int x, int y) {
 	if (isDragging && selectedRect != -1) {
 		// 윈도우 좌표를 OpenGL 좌표로 변환
 		float nx = (float)(x) / (glutGet(GLUT_WINDOW_WIDTH) / 2) - 1.0f;
@@ -136,7 +136,7 @@ void motion(int x, int y) {
 	}
 }
 
-void keyboard(unsigned char key, int x, int y) {
+GLvoid keyboard(unsigned char key, int x, int y) {
 	if (key == 'a' && rectangle.size() < 10) {
 		addRectangle();
 	}

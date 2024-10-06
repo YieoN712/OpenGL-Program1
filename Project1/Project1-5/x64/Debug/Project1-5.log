@@ -1,3 +1,4 @@
 ﻿  ClearScreen.cpp
-MSVCRTD.lib(exe_main.obj) : error LNK2019: main"int __cdecl invoke_main(void)" (?invoke_main@@YAHXZ) 함수에서 참조되는 확인할 수 없는 외부 기호
+C:\IEONCG\OpenGL-Program1\Project1\Project1-5\ClearScreen.cpp(36,1): warning C4326: 'main'의 반환 형식이 'int'이어야 하는데 'void'입니다.
+ClearScreen.obj : error LNK2019: "void __cdecl Keyboard(unsigned char,int,int)" (?Keyboard@@YAXEHH@Z)main 함수에서 참조되는 확인할 수 없는 외부 기호
 C:\IEONCG\OpenGL-Program1\Project1\x64\Debug\Project1-5.exe : fatal error LNK1120: 1개의 확인할 수 없는 외부 참조입니다.
