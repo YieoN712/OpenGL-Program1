@@ -14,8 +14,9 @@ struct Rect {
 struct EraserRect {
 	float x, y;
 	float r, g, b;
+	float size;
 
-	EraserRect() : r(1.0f), g(1.0f), b(1.0f), x(0.0f), y(0.0f) {}
+	EraserRect() : r(0.0f), g(0.0f), b(0.0f), size(0.1f) {}
 };
 
 std::vector<Rect> rectangle;
@@ -39,8 +40,8 @@ void main(int argc, char** argv)
 	//--- 윈도우 생성하기
 	glutInit(&argc, argv);							// glut 초기화
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA);	// 디스플레이 모드 설정
-	glutInitWindowPosition(620, 250);				// 윈도우의 위치 지정
-	glutInitWindowSize(500, 500);					// 윈도우의 크기 지정
+	glutInitWindowPosition(520, 150);				// 윈도우의 위치 지정
+	glutInitWindowSize(800, 800);					// 윈도우의 크기 지정
 	glutCreateWindow("Clear screen");				// 윈도우 생성(윈도우 이름)
 
 	//--- GLEW 초기화하기
@@ -54,9 +55,13 @@ void main(int argc, char** argv)
 	else
 		std::cout << "GLEW Initialized\n";
 
+	RandomRectDraw();
+
 	glutDisplayFunc(drawScene);
 	glutReshapeFunc(Reshape);
 	glutKeyboardFunc(Keyboard);
+	glutMouseFunc(mouseButton);
+	glutMotionFunc(mouseMove);
 	glutMainLoop();
 }
 
@@ -84,9 +89,10 @@ GLvoid Reshape(int w, int h) {
 	glViewport(0, 0, w, h);
 }
 
-GLvoid keyboard(unsigned char key, int x, int y) {
+GLvoid Keyboard(unsigned char key, int x, int y) {
 	if (key == 'r') {
 		rectangle.clear();
+		eraser.size = 0.1f;
 		RandomRectDraw();
 		glutPostRedisplay();
 	}
@@ -132,21 +138,23 @@ void drawEraser() {
 	if (erasing) {
 		glColor3f(eraser.r, eraser.g, eraser.b);
 		glBegin(GL_QUADS);
-		glVertex2f(eraser.x - 0.2f, eraser.y - 0.2f);
-		glVertex2f(eraser.x + 0.2f, eraser.y - 0.2f);
-		glVertex2f(eraser.x + 0.2f, eraser.y + 0.2f);
-		glVertex2f(eraser.x - 0.2f, eraser.y + 0.2f);
+		glVertex2f(eraser.x - eraser.size, eraser.y - eraser.size);
+		glVertex2f(eraser.x + eraser.size, eraser.y - eraser.size);
+		glVertex2f(eraser.x + eraser.size, eraser.y + eraser.size);
+		glVertex2f(eraser.x - eraser.size, eraser.y + eraser.size);
 		glEnd();
 	}
 }
 
 void checkCollision() {
 	for (auto it = rectangle.begin(); it != rectangle.end(); ) {
-		if (eraser.x - 0.2f < it->x2 && eraser.x + 0.2f > it->x1 &&
-			eraser.y - 0.2f < it->y2 && eraser.y + 0.2f > it->y1) {
+		if (eraser.x - eraser.size < it->x2 && eraser.x + eraser.size > it->x1 &&
+			eraser.y - eraser.size < it->y2 && eraser.y + eraser.size > it->y1) {
 			eraser.r = it->r;
 			eraser.g = it->g;
 			eraser.b = it->b;
+
+			eraser.size += 0.005f;
 
 			it = rectangle.erase(it);
 		}
